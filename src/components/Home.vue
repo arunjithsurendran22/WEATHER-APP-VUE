@@ -163,15 +163,21 @@
 
 <script setup>
 import axios from "axios";
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
+import axiosInstance from "../authorization/api";
 
 const mapBoxAPIKey =
   "pk.eyJ1IjoiYXJ1bmppdGhzdXJlbmRyYW4iLCJhIjoiY2x0a2J2OXQ3MHVrbzJqbzE0MW1semZmNCJ9.HvCIQ_P6rIKrSmqe5b3b9A";
+const APIkey = "fc0f79a144e9415ca3f70223241003";
+let day = 10;
 
 const searchQuery = ref("");
 const queryTimeout = ref(null);
 const mapboxSearchResults = ref(null);
 const searchError = ref(false); // Initialize error state to false
+const newCity = ref("");
+const weatherData = ref(null); // Initialize weatherData ref
+const weatherDataTen = ref(null); // Initialize weatherDataTen ref
 
 const getSearchResults = () => {
   clearTimeout(queryTimeout.value);
@@ -193,44 +199,50 @@ const getSearchResults = () => {
   }, 300);
 };
 
-// Function to handle city preview
+const getCurrentCity = async () => {
+  try {
+    const response = await axiosInstance.get("/weather/current-weather/get");
+    newCity.value = response.data.currentCity;
+    console.log(newCity.value);
+  } catch (error) {
+    console.error("Failed to get data:", error);
+  }
+};
+
 const previewCity = (searchResult) => {
   const [city, state] = searchResult.place_name.split(",");
-  searchQuery.value = city.trim();
-  const APIkey = "fc0f79a144e9415ca3f70223241003";
-  let day = 10;
-  console.log(city);
-  getWeatherData(city, APIkey); // Pass the selected city to getWeatherData
-  getTenDaysData(city, day, APIkey); // Pass the selected city to getTenDaysData
-  mapboxSearchResults.value = null; // Clear the dropdown results
+  const cityNameData = city.split(" ") // Extracted city name
+  const newCityName= cityNameData[0]; // Update searchQuery value
+  console.log(newCityName,"newCityName");
+  newCity.value = newCityName; // Set newCity value to the extracted city name
+  console.log(newCity.value,"newCity.value");
+  mapboxSearchResults.value = null; // Clear search results
+  searchQuery.value = "";
+  
 };
 
-const getWeatherData = async (city, APIkey) => {
+const getWeatherData = async () => {
   try {
+    console.log(newCity.value);
     const response = await axios.get(
-      `http://api.weatherapi.com/v1/current.json?key=${APIkey}&q=${city}&aqi=no`
+      `http://api.weatherapi.com/v1/current.json?key=${APIkey}&q=${newCity.value}&aqi=no`
     );
-    // Assign response to weatherData
     weatherData.value = response.data;
   } catch (error) {
-    console.log(error);
+    console.error("Weather API Error:", error);
   }
 };
 
-const getTenDaysData = async (city, day, APIkey) => {
+const getTenDaysData = async () => {
   try {
     const response = await axios.get(
-      `http://api.weatherapi.com/v1/forecast.json?key=${APIkey}&q=${city}&days=${day}&aqi=no&alerts=no`
+      `http://api.weatherapi.com/v1/forecast.json?key=${APIkey}&q=${newCity.value}&days=${day}&aqi=no&alerts=no`
     );
-    // Assign response to weatherDataTen
     weatherDataTen.value = response.data;
   } catch (error) {
-    console.log(error);
+    console.error("Weather API Error:", error);
   }
 };
-
-const weatherData = ref(null); // Initialize weatherData ref
-const weatherDataTen = ref(null); // Initialize weatherDataTen ref
 
 const formatDate = (dateString) => {
   const date = new Date(dateString);
@@ -246,4 +258,10 @@ const getDayOfWeek = (dateString) => {
   const date = new Date(dateString);
   return daysOfWeek[date.getDay()];
 };
+
+onMounted(async () => {
+  await getCurrentCity();
+  getWeatherData();
+  getTenDaysData();
+});
 </script>
