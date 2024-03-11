@@ -4,16 +4,6 @@
       <button @click="addToMaps"><i class="fa-solid fa-plus"></i></button>
     </div>
     <div class="pt-4 mb-8 relative">
-      <!-- Loading message -->
-      <div v-if="loading" class="flex flex-col items-center text-white py-12">
-        <p>Loading weather data...</p>
-      </div>
-
-      <!-- Error message -->
-      <div v-if="error" class="flex flex-col items-center text-white py-12">
-        <p>Failed to fetch weather data. Please try again later.</p>
-      </div>
-
       <!-- Search Input -->
       <input
         type="text"
@@ -43,6 +33,16 @@
           </li>
         </template>
       </ul>
+    </div>
+
+    <!-- Loading message -->
+    <div v-if="loading" class="flex flex-col items-center text-white py-12">
+      <p>Loading weather data...</p>
+    </div>
+
+    <!-- Error message -->
+    <div v-if="error" class="flex flex-col items-center text-red-600 py-12">
+      <p>Failed to fetch weather data. Please try again later.</p>
     </div>
 
     <!-- Conditional Rendering for Weather Data -->

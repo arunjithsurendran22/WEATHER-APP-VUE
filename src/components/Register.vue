@@ -1,8 +1,8 @@
 <template>
-  <div class="bg-gray-400 h-screen">
-    <div class="max-w-md mx-auto p-10 rounded-lg shadow-lg bg-white">
+  <div class="bg-gray-400 min-h-screen flex items-center justify-center">
+    <div class="max-w-md mx-auto p-10 rounded-lg shadow-lg bg-white w-96">
       <h1 class="text-center text-3xl font-bold mb-6">REGISTER</h1>
-      <form @submit.prevent="registerUser" class="space-y-4 mt-72">
+      <form @submit.prevent="registerUser" class="space-y-6">
         <div>
           <input
             type="text"
