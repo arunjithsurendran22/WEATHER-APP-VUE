@@ -7,6 +7,11 @@
           <RouterLink to="/">LOGIN</RouterLink>
           <RouterLink to="/register">REGISTER</RouterLink>
         </div>
+        <div>
+          <RouterLink to="/weathers">
+            <i class="fa-solid fa-map"></i>
+          </RouterLink>
+        </div>
       </div>
     </div>
   </nav>

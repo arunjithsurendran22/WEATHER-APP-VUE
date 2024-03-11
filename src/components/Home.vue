@@ -1,5 +1,8 @@
 <template>
-  <main class="container text-white">
+  <main class="container text-white bg-gray-900">
+    <div class="text-white flex justify-end mt-10">
+      <button @click="addToMaps"><i class="fa-solid fa-plus"></i></button>
+    </div>
     <div class="pt-4 mb-8 relative">
       <!-- Search Input -->
       <input
@@ -163,7 +166,7 @@
 
 <script setup>
 import axios from "axios";
-import { ref, onMounted } from "vue";
+import { ref, onMounted, watchEffect } from "vue";
 import axiosInstance from "../authorization/api";
 
 const mapBoxAPIKey =
@@ -211,19 +214,19 @@ const getCurrentCity = async () => {
 
 const previewCity = (searchResult) => {
   const [city, state] = searchResult.place_name.split(",");
-  const cityNameData = city.split(" ") // Extracted city name
-  const newCityName= cityNameData[0]; // Update searchQuery value
-  console.log(newCityName,"newCityName");
+  const cityNameData = city.split(","); // Extracted city name
+  const newCityName = cityNameData[0]; // Update searchQuery value
+  console.log(newCityName, "newCityName");
   newCity.value = newCityName; // Set newCity value to the extracted city name
-  console.log(newCity.value,"newCity.value");
+  console.log(newCity.value, "newCity.value");
   mapboxSearchResults.value = null; // Clear search results
   searchQuery.value = "";
-  
+  getWeatherData();
+  getTenDaysData();
 };
 
 const getWeatherData = async () => {
   try {
-    console.log(newCity.value);
     const response = await axios.get(
       `http://api.weatherapi.com/v1/current.json?key=${APIkey}&q=${newCity.value}&aqi=no`
     );
@@ -244,6 +247,26 @@ const getTenDaysData = async () => {
   }
 };
 
+const addNewCity = async () => {
+  try {
+    await axiosInstance.post("/weather/current-weather/add", {
+      currentCity: newCity.value,
+    });
+    console.log("new city name posted");
+  } catch (error) {
+    console.log("failed to add city");
+  }
+};
+
+const addToMaps = async () => {
+  try {
+
+    const response =await axiosInstance.post("/weather/multiple-weather/add", { newPlace: newCity.value });
+    console.log("succesffulyy added mutiple places");
+  } catch (error) {
+    console.log("failed to add");
+  }
+};
 const formatDate = (dateString) => {
   const date = new Date(dateString);
   return date.toLocaleDateString("en-IN", {
@@ -263,5 +286,11 @@ onMounted(async () => {
   await getCurrentCity();
   getWeatherData();
   getTenDaysData();
+});
+
+watchEffect(() => {
+  if (newCity.value.trim() !== "") {
+    addNewCity();
+  }
 });
 </script>

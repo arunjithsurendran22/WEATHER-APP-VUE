@@ -5,6 +5,8 @@ import "./style.css";
 import Home from "./components/Home.vue";
 import Register from "./components/Register.vue";
 import Login from "./components/Login.vue";
+import Weathers from "./components/Weathers.vue";
+
 const router = createRouter({
   history: createWebHistory(),
   routes: [
@@ -22,6 +24,11 @@ const router = createRouter({
       path: "/",
       name: "Login",
       component: Login,
+    },
+    {
+      path: "/weathers",
+      name: "Weathers",
+      component: Weathers,
     },
   ],
 });
