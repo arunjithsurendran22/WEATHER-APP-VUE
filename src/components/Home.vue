@@ -4,6 +4,16 @@
       <button @click="addToMaps"><i class="fa-solid fa-plus"></i></button>
     </div>
     <div class="pt-4 mb-8 relative">
+      <!-- Loading message -->
+      <div v-if="loading" class="flex flex-col items-center text-white py-12">
+        <p>Loading weather data...</p>
+      </div>
+
+      <!-- Error message -->
+      <div v-if="error" class="flex flex-col items-center text-white py-12">
+        <p>Failed to fetch weather data. Please try again later.</p>
+      </div>
+
       <!-- Search Input -->
       <input
         type="text"
@@ -174,6 +184,7 @@ const mapBoxAPIKey =
 const APIkey = "fc0f79a144e9415ca3f70223241003";
 let day = 10;
 
+const loading = ref(false);
 const searchQuery = ref("");
 const queryTimeout = ref(null);
 const mapboxSearchResults = ref(null);
@@ -226,24 +237,35 @@ const previewCity = (searchResult) => {
 };
 
 const getWeatherData = async () => {
+  loading.value = true;
   try {
-    const response = await axios.get(
+    const responseData = await axios.get(
       `http://api.weatherapi.com/v1/current.json?key=${APIkey}&q=${newCity.value}&aqi=no`
     );
-    weatherData.value = response.data;
+    console.log(responseData.data);
+    weatherData.value = responseData.data;
+    loading.value = false;
+    console.log(weatherData.value, "weatherData");
   } catch (error) {
     console.error("Weather API Error:", error);
+    loading.value = false; // Turn off loading state in case of error
+    error.value = true; // Set error state to true
   }
 };
 
 const getTenDaysData = async () => {
+  loading.value = true;
   try {
-    const response = await axios.get(
+    const responseTenData = await axios.get(
       `http://api.weatherapi.com/v1/forecast.json?key=${APIkey}&q=${newCity.value}&days=${day}&aqi=no&alerts=no`
     );
-    weatherDataTen.value = response.data;
+    weatherDataTen.value = responseTenData.data;
+    console.log(weatherData.value, "weatherDataTen");
+    loading.value = false;
   } catch (error) {
     console.error("Weather API Error:", error);
+    loading.value = false; // Turn off loading state in case of error
+    error.value = true; // Set error state to true
   }
 };
 
@@ -260,8 +282,9 @@ const addNewCity = async () => {
 
 const addToMaps = async () => {
   try {
-
-    const response =await axiosInstance.post("/weather/multiple-weather/add", { newPlace: newCity.value });
+    const response = await axiosInstance.post("/weather/multiple-weather/add", {
+      newPlace: newCity.value,
+    });
     console.log("succesffulyy added mutiple places");
   } catch (error) {
     console.log("failed to add");
