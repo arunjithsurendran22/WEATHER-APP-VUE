@@ -4,7 +4,7 @@ export default {
   theme: {
     extend: {
       colors: {
-        "weather-primary": "#6764F5",
+        "weather-primary": "#111827",
         "weather-secondary": "#004E71",
       },
       container: {

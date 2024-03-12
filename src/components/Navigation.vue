@@ -2,10 +2,11 @@
   <nav class="bg-gray-800 shadow-lg">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex justify-between h-16 text-white items-center">
-        <RouterLink to="/home" v-if="accessToken">
+        <RouterLink to="/home">
           <i class="fa-solid fa-house"></i>
         </RouterLink>
-        <div class="flex w-20 justify-between" v-if="accessToken">
+        <div class="flex w-72 justify-between">
+          <p class="text-white">{{ profile ? profile.name : "" }}</p>
           <RouterLink to="/weathers">
             <i class="fa-solid fa-map"></i>
           </RouterLink>
@@ -15,40 +16,40 @@
             </button>
           </div>
         </div>
-        <div class="w-40 flex justify-between" v-if="!accessToken">
-          <RouterLink to="/register" v-if="!accessToken">
-            <button>SignUp</button>
-          </RouterLink>
-          <RouterLink to="/" v-if="!accessToken">
-            <button>SignIn</button>
-          </RouterLink>
-        </div>
       </div>
     </div>
   </nav>
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 import { RouterLink, useRouter } from "vue-router";
 import axiosInstance from "../authorization/api";
-
 const route = useRouter();
-const accessToken = ref(localStorage.getItem("accessToken"));
+const isAuthenticated = ref(!!localStorage.getItem("accessToken"));
+const profile = ref(null);
 
 const logout = async () => {
   try {
     await axiosInstance.post("/profile/logout-user");
     localStorage.removeItem("accessToken");
-    accessToken.value = null;
+    isAuthenticated.value = false;
     route.push("/");
   } catch (error) {
-    console.log("failed to logout");
+    console.error("Failed to logout:", error);
   }
 };
 
-</script>
+const getUserProfile = async () => {
+  try {
+    const response = await axiosInstance.get("/profile/get-profile");
+    profile.value = response.data;
+  } catch (error) {
+    console.error("Failed to get profile:", error);
+  }
+};
 
-<style scoped>
-/* Add custom styles here */
-</style>
+onMounted(() => {
+  getUserProfile();
+});
+</script>

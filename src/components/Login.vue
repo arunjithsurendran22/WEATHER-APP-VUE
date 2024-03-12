@@ -68,6 +68,7 @@ const loginUser = async () => {
     if (response.data.message === "User Login successful") {
       // Redirect to home page
       localStorage.setItem("accessToken", response.data.accessTokenUser);
+      accessToken.value = response.data.accessTokenUser;
       router.push("/home");
     }
   } catch (error) {

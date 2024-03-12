@@ -1,20 +1,20 @@
 <template>
   <div class="mt-10">
     <!-- Loading message -->
-    <div
+    <!-- <div
       v-if="loading"
       class="flex flex-col items-center text-white py-12 bg-gray-800 rounded-lg shadow-md"
     >
       <p>Loading weather data...</p>
-    </div>
+    </div> -->
 
     <!-- Error message -->
-    <div
+    <!-- <div
       v-if="error"
       class="flex flex-col items-center text-red-600 py-12 bg-gray-800 rounded-lg shadow-md"
     >
       <p>Failed to fetch weather data. Please try again later.</p>
-    </div>
+    </div> -->
     <!-- Display multiple places here -->
     <ul
       v-if="multiplePlaces && multiplePlaces.length"
@@ -106,6 +106,7 @@ const deletePlace = async (place) => {
     multiplePlaces.value = response.data.multiplePlaces;
     // Remove weather data for the deleted place
     delete weatherData.value[place.name];
+    await getMultiplePlaces();
   } catch (error) {
     console.error("Failed to delete place:", error);
   }
@@ -113,6 +114,10 @@ const deletePlace = async (place) => {
 
 // Fetch weather data for each place when multiplePlaces changes
 onMounted(() => {
+  getMultiplePlaces();
+});
+
+watchEffect(() => {
   getMultiplePlaces();
 });
 </script>

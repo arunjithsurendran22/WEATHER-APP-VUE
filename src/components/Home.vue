@@ -1,7 +1,12 @@
 <template>
   <main class="container text-white bg-gray-900">
-    <div class="text-white flex justify-end mt-10">
-      <button @click="addToMaps"><i class="fa-solid fa-plus"></i></button>
+    <div class="text-white flex justify-between mt-10">
+      <button @click="getCurrentLocation">
+        <i class="fa-solid fa-location-dot"></i>
+      </button>
+      <button @click="addToMaps">
+        <i :class="isAddedToMaps ? 'fa-solid fa-check' : 'fa-solid fa-plus'"></i>
+      </button>
     </div>
     <div class="pt-4 mb-8 relative">
       <!-- Search Input -->
@@ -192,6 +197,59 @@ const searchError = ref(false); // Initialize error state to false
 const newCity = ref("");
 const weatherData = ref(null); // Initialize weatherData ref
 const weatherDataTen = ref(null); // Initialize weatherDataTen ref
+const isAddedToMaps = ref(false);
+const currentLocation = ref(null);
+const accessToken =
+  "pk.eyJ1IjoiYXJ1bmppdGhzdXJlbmRyYW4iLCJhIjoiY2x0bndtODQ2MGFtYTJpcXBmcmdic3B3NSJ9.9nqnmlBgy-DAxDPWu4l3Gw";
+
+const getCurrentLocation = () => {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const { latitude, longitude } = position.coords;
+        currentLocation.value = {
+          latitude,
+          longitude,
+          placeName: await getPlaceName(latitude, longitude),
+        };
+        console.log(currentLocation.value.placeName);
+        const placeNameParts = currentLocation.value.placeName.split(",");
+        if (placeNameParts.length >= 3) {
+          var thirdLastText = placeNameParts[placeNameParts.length - 3].trim();
+          newCity.value = thirdLastText;
+          console.log(newCity.value, "get current location");
+          await getWeatherData();
+          await getTenDaysData();
+        } else {
+          console.error("Place name does not contain enough parts.");
+        }
+      },
+      (error) => {
+        console.error("Error occurred while getting current location:", error);
+      }
+    );
+  } else {
+    console.error("Geolocation is not supported by this browser.");
+  }
+};
+
+const getPlaceName = async (latitude, longitude) => {
+  try {
+    const response = await fetch(
+      `https://api.mapbox.com/geocoding/v5/mapbox.places/${longitude},${latitude}.json?access_token=${accessToken}`
+    );
+    const data = await response.json();
+    if (data.features && data.features.length > 0) {
+      // Assuming the first feature is the most relevant one
+      return data.features[0].place_name;
+    } else {
+      return "Unknown";
+    }
+  } catch (error) {
+    console.error("Error occurred while fetching place name:", error);
+    return "Unknown";
+  }
+};
 
 const getSearchResults = () => {
   clearTimeout(queryTimeout.value);
@@ -217,7 +275,7 @@ const getCurrentCity = async () => {
   try {
     const response = await axiosInstance.get("/weather/current-weather/get");
     newCity.value = response.data.currentCity;
-    console.log(newCity.value);
+    console.log(newCity.value, "initial city name");
   } catch (error) {
     console.error("Failed to get data:", error);
   }
@@ -227,25 +285,24 @@ const previewCity = (searchResult) => {
   const [city, state] = searchResult.place_name.split(",");
   const cityNameData = city.split(","); // Extracted city name
   const newCityName = cityNameData[0]; // Update searchQuery value
-  console.log(newCityName, "newCityName");
-  newCity.value = newCityName; // Set newCity value to the extracted city name
-  console.log(newCity.value, "newCity.value");
+  console.log(newCityName, "searched city name");
+  newCity.value = newCityName;
   mapboxSearchResults.value = null; // Clear search results
   searchQuery.value = "";
   getWeatherData();
   getTenDaysData();
+  isAddedToMaps.value = false;
 };
 
 const getWeatherData = async () => {
   loading.value = true;
+  isAddedToMaps.value = false;
   try {
     const responseData = await axios.get(
       `http://api.weatherapi.com/v1/current.json?key=${APIkey}&q=${newCity.value}&aqi=no`
     );
-    console.log(responseData.data);
     weatherData.value = responseData.data;
     loading.value = false;
-    console.log(weatherData.value, "weatherData");
   } catch (error) {
     console.error("Weather API Error:", error);
     loading.value = false; // Turn off loading state in case of error
@@ -253,14 +310,13 @@ const getWeatherData = async () => {
   }
 };
 
-const getTenDaysData = async () => {
+const getTenDaysData = async (placeName) => {
   loading.value = true;
   try {
     const responseTenData = await axios.get(
       `http://api.weatherapi.com/v1/forecast.json?key=${APIkey}&q=${newCity.value}&days=${day}&aqi=no&alerts=no`
     );
     weatherDataTen.value = responseTenData.data;
-    console.log(weatherData.value, "weatherDataTen");
     loading.value = false;
   } catch (error) {
     console.error("Weather API Error:", error);
@@ -285,6 +341,8 @@ const addToMaps = async () => {
     const response = await axiosInstance.post("/weather/multiple-weather/add", {
       newPlace: newCity.value,
     });
+    isAddedToMaps.value = true;
+    console.log(response.data);
     console.log("succesffulyy added mutiple places");
   } catch (error) {
     console.log("failed to add");
