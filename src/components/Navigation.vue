@@ -1,16 +1,18 @@
 <template>
-  <nav class="bg-gray-800 shadow-lg ">
+  <nav class="bg-gray-800 shadow-lg">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex justify-between h-16 text-white items-center">
         <router-link to="/home">
           <i class="fas fa-home"></i>
           <!-- corrected icon class -->
         </router-link>
-        <div class="flex w-72 justify-between">
-          <router-link to="/weathers">
-            <i class="fas fa-map"></i>
-            <!-- corrected icon class -->
-          </router-link>
+        <div class="flex w-16 justify-between">
+          <div>
+            <router-link to="/weathers">
+              <i class="fas fa-map"></i>
+              <!-- corrected icon class -->
+            </router-link>
+          </div>
           <div>
             <button @click="logout">
               <i class="fas fa-sign-out-alt"></i>
@@ -38,12 +40,11 @@ const logout = async () => {
     await axiosInstance.post("/profile/logout-user");
     localStorage.removeItem("accessToken");
     isLoggedIn.value = false;
-    toast.success(" Successfully Logout")
+    toast.success(" Successfully Logout");
     route.push("/");
   } catch (error) {
-    toast.error("Failed to logout")
+    toast.error("Failed to logout");
     console.error("Failed to logout:", error);
   }
 };
-
 </script>

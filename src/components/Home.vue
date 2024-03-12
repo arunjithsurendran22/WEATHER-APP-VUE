@@ -307,6 +307,7 @@ const getWeatherData = async () => {
       `http://api.weatherapi.com/v1/current.json?key=${APIkey}&q=${newCity.value}&aqi=no`
     );
     weatherData.value = responseData.data;
+    console.log(responseData.data);
     loading.value = false;
   } catch (error) {
     console.error("Weather API Error:", error);

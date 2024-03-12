@@ -1,15 +1,21 @@
 <template>
-  <div class="bg-gray-400 min-h-screen flex items-center justify-center">
-    <div class="max-w-md mx-auto p-10 rounded-lg shadow-lg bg-white w-96">
-      <h1 class="text-center text-3xl font-bold mb-6">REGISTER</h1>
-      <form @submit.prevent="registerUser" class="space-y-6">
+  <div
+    class="bg-gradient-to-b from-purple-900 to-blue-900 min-h-screen flex items-center justify-center"
+  >
+    <div
+      class="bg-gray-300 rounded-lg shadow-xl p-8 max-w-md w-full transform transition-transform duration-300 hover:scale-105"
+    >
+      <h1 class="text-center text-4xl font-bold mb-8 text-gray-900 font-serif">
+        Register
+      </h1>
+      <form @submit.prevent="registerUser" class="space-y-8">
         <div>
           <input
             type="text"
             v-model="name"
             placeholder="Name"
             required
-            class="block w-full px-4 py-2 rounded-md border focus:outline-none focus:border-blue-500"
+            class="block w-full px-4 py-3 rounded-md border focus:outline-none focus:border-blue-500 bg-gray-100 text-gray-900 text-lg shadow-md transition-shadow duration-300"
           />
         </div>
         <div>
@@ -19,9 +25,9 @@
             placeholder="Phone"
             required
             @input="validateMobile"
-            class="block w-full px-4 py-2 rounded-md border focus:outline-none focus:border-blue-500"
+            class="block w-full px-4 py-3 rounded-md border focus:outline-none focus:border-blue-500 bg-gray-100 text-gray-900 text-lg shadow-md transition-shadow duration-300"
           />
-          <p v-if="mobileError" class="text-red-500">{{ mobileError }}</p>
+          <p v-if="mobileError" class="text-red-500 text-lg mt-2">{{ mobileError }}</p>
         </div>
         <div>
           <input
@@ -30,9 +36,9 @@
             placeholder="Email"
             required
             @input="validateEmail"
-            class="block w-full px-4 py-2 rounded-md border focus:outline-none focus:border-blue-500"
+            class="block w-full px-4 py-3 rounded-md border focus:outline-none focus:border-blue-500 bg-gray-100 text-gray-900 text-lg shadow-md transition-shadow duration-300"
           />
-          <p v-if="emailError" class="text-red-500">{{ emailError }}</p>
+          <p v-if="emailError" class="text-red-500 text-lg mt-2">{{ emailError }}</p>
         </div>
         <div>
           <input
@@ -41,18 +47,28 @@
             placeholder="Password"
             required
             @input="validatePassword"
-            class="block w-full px-4 py-2 rounded-md border focus:outline-none focus:border-blue-500"
+            class="block w-full px-4 py-3 rounded-md border focus:outline-none focus:border-blue-500 bg-gray-100 text-gray-900 text-lg shadow-md transition-shadow duration-300"
           />
-          <p v-if="passwordError" class="text-red-500">{{ passwordError }}</p>
+          <p v-if="passwordError" class="text-red-500 text-lg mt-2">
+            {{ passwordError }}
+          </p>
         </div>
-        <p v-if="error" class="text-red-500">{{ error }}</p>
+        <p v-if="error" class="text-red-500 text-lg">{{ error }}</p>
         <button
           type="submit"
-          class="block w-full px-4 py-2 bg-blue-800 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:bg-blue-700 transition-all duration-300"
+          @click="rotateButton"
+          class="block w-full px-4 py-3 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-md hover:bg-gradient-to-r hover:from-purple-700 hover:to-blue-700 focus:outline-none focus:bg-gradient-to-r focus:from-purple-700 focus:to-blue-700 transition-all duration-300 text-lg shadow-lg transition-shadow duration-300 transform hover:-translate-y-1 hover:scale-105"
         >
-          REGISTER
-        </button> 
+          <span v-if="!isRotated">REGISTER</span>
+          <span v-else>⟳</span>
+        </button>
       </form>
+      <RouterLink
+        to="/"
+        class="block text-center mt-4 text-gray-600 hover:underline italic"
+      >
+        <span>Already have an account?</span> Login
+      </RouterLink>
     </div>
   </div>
 </template>
@@ -62,8 +78,6 @@ import { ref } from "vue";
 import { useRouter } from "vue-router";
 import axiosInstance from "../authorization/api";
 import { useToast } from "vue-toast-notification";
-import "vue-toast-notification/dist/theme-sugar.css";
-
 
 const name = ref("");
 const mobile = ref("");
@@ -75,7 +89,7 @@ const mobileError = ref(null);
 const emailError = ref(null);
 const passwordError = ref(null);
 const toast = useToast();
-
+const isRotated = ref(false);
 
 const registerUser = async () => {
   try {
@@ -85,15 +99,13 @@ const registerUser = async () => {
       email: email.value,
       password: password.value,
     });
-    toast.success(response.data.message);
     if (response.data.message === "user registered successfully") {
       router.push("/");
-      toast.success(response.data.message);
     }
-    console.log(response.data);
+    toast.success(response.data.message);
   } catch (error) {
-    toast.error(error.data.message);
     console.error(error.response.data.message);
+    toast.error(error.data.message);
     error.value = error.response.data.message;
   }
 };
@@ -125,8 +137,17 @@ const validatePassword = () => {
     passwordError.value = null;
   }
 };
+
+const rotateButton = () => {
+  isRotated.value = true;
+  setTimeout(() => {
+    isRotated.value = false;
+  }, 1000);
+};
 </script>
 
 <style scoped>
-/* Add any additional custom styles here */
+button {
+  transition: transform 0.3s ease-in-out;
+}
 </style>
