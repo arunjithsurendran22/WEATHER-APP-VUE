@@ -46,16 +46,19 @@ import axios from "axios";
 import { ref } from "vue";
 import { useRouter, RouterLink } from "vue-router";
 import axiosInstance from "../authorization/api";
+import { useToast } from "vue-toast-notification";
+import "vue-toast-notification/dist/theme-sugar.css";
 
-// Define reactive properties
 const email = ref("");
 const password = ref("");
 const error = ref(null);
 const emailError = ref(null);
 const accessToken = ref(localStorage.getItem("accessToken"));
+const userName = ref(localStorage.getItem("userName") || "");
 
 // Get router instance
 const router = useRouter();
+const toast = useToast();
 
 // Define loginUser function
 const loginUser = async () => {
@@ -64,14 +67,17 @@ const loginUser = async () => {
       email: email.value,
       password: password.value,
     });
+    toast.success(response.data.message);
     console.log(response.data);
     if (response.data.message === "User Login successful") {
-      // Redirect to home page
       localStorage.setItem("accessToken", response.data.accessTokenUser);
-      accessToken.value = response.data.accessTokenUser;
+      localStorage.setItem("userName", response.data.name);
+      userName.value = response.data.name;
+      toast.success(response.data.message);
       router.push("/home");
     }
   } catch (error) {
+    toast.error(error.message);
     console.error(error.response.data.message);
     error.value = error.response.data.message;
   }

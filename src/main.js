@@ -6,6 +6,9 @@ import Home from "./components/Home.vue";
 import Register from "./components/Register.vue";
 import Login from "./components/Login.vue";
 import Weathers from "./components/Weathers.vue";
+import ToastPlugin, { useToast } from 'vue-toast-notification';
+import 'vue-toast-notification/dist/theme-bootstrap.css';
+
 
 const router = createRouter({
   history: createWebHistory(),
@@ -34,6 +37,6 @@ const router = createRouter({
 });
 
 const app = createApp(App);
-
+app.use(ToastPlugin);
 app.use(router);
 app.mount("#app");

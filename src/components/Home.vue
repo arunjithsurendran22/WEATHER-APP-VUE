@@ -183,6 +183,9 @@
 import axios from "axios";
 import { ref, onMounted, watchEffect } from "vue";
 import axiosInstance from "../authorization/api";
+import { useToast } from "vue-toast-notification";
+import "vue-toast-notification/dist/theme-sugar.css";
+const toast = useToast();
 
 const mapBoxAPIKey =
   "pk.eyJ1IjoiYXJ1bmppdGhzdXJlbmRyYW4iLCJhIjoiY2x0a2J2OXQ3MHVrbzJqbzE0MW1semZmNCJ9.HvCIQ_P6rIKrSmqe5b3b9A";
@@ -344,8 +347,10 @@ const addToMaps = async () => {
     isAddedToMaps.value = true;
     console.log(response.data);
     console.log("succesffulyy added mutiple places");
+    toast.success(response.data.message);
   } catch (error) {
     console.log("failed to add");
+    toast.error("existing weather data")
   }
 };
 const formatDate = (dateString) => {

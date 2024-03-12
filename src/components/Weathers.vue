@@ -51,6 +51,9 @@
 import { ref, onMounted, watchEffect } from "vue";
 import axiosInstance from "../authorization/api";
 import axios from "axios";
+import { useToast } from "vue-toast-notification";
+import "vue-toast-notification/dist/theme-sugar.css";
+const toast = useToast();
 
 const multiplePlaces = ref([]);
 const weatherData = ref({});
@@ -101,9 +104,8 @@ const deletePlace = async (place) => {
     const response = await axiosInstance.delete(
       `/weather/multiple-weather/delete/${placeId}`
     );
-    console.log("Response:", response.data);
-    // Assuming the response contains updated multiple places
     multiplePlaces.value = response.data.multiplePlaces;
+    toast.success("deleted Successfully");
     // Remove weather data for the deleted place
     delete weatherData.value[place.name];
     await getMultiplePlaces();

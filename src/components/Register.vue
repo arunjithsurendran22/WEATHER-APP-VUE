@@ -51,7 +51,7 @@
           class="block w-full px-4 py-2 bg-blue-800 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:bg-blue-700 transition-all duration-300"
         >
           REGISTER
-        </button>
+        </button> 
       </form>
     </div>
   </div>
@@ -61,6 +61,9 @@
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import axiosInstance from "../authorization/api";
+import { useToast } from "vue-toast-notification";
+import "vue-toast-notification/dist/theme-sugar.css";
+
 
 const name = ref("");
 const mobile = ref("");
@@ -71,6 +74,8 @@ const error = ref(null);
 const mobileError = ref(null);
 const emailError = ref(null);
 const passwordError = ref(null);
+const toast = useToast();
+
 
 const registerUser = async () => {
   try {
@@ -80,11 +85,14 @@ const registerUser = async () => {
       email: email.value,
       password: password.value,
     });
+    toast.success(response.data.message);
     if (response.data.message === "user registered successfully") {
       router.push("/");
+      toast.success(response.data.message);
     }
     console.log(response.data);
   } catch (error) {
+    toast.error(error.data.message);
     console.error(error.response.data.message);
     error.value = error.response.data.message;
   }
