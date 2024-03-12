@@ -1,5 +1,7 @@
 <template>
-  <div class="mt-10">
+  <div >
+    <Navigation />
+
     <!-- Loading message -->
     <!-- <div
       v-if="loading"
@@ -18,7 +20,7 @@
     <!-- Display multiple places here -->
     <ul
       v-if="multiplePlaces && multiplePlaces.length"
-      class="grid grid-cols-1 gap-4 mt-10 container"
+      class="grid grid-cols-1 gap-4  container"
     >
       <li
         v-for="(place, index) in multiplePlaces"
@@ -49,6 +51,7 @@
 </template>
 <script setup>
 import { ref, onMounted, watchEffect } from "vue";
+import Navigation from "./Navigation.vue";
 import axiosInstance from "../authorization/api";
 import axios from "axios";
 import { useToast } from "vue-toast-notification";

@@ -1,11 +1,12 @@
 <script setup>
 import { useRouter } from "vue-router";
-import Navigation from "./components/Navigation.vue";
 const router = useRouter();
+const isLoginPage = router.currentRoute.value.name === "Login";
 </script>
+
 <template>
   <div class="flex flex-col min-h-screen bg-weather-primary">
-    <Navigation />
+    <Navigation v-if="!isLoginPage" />
     <router-view />
   </div>
 </template>

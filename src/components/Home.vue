@@ -1,5 +1,6 @@
 <template>
-  <main class="container text-white bg-gray-900">
+  <main class=" text-white bg-gray-900 container">
+    <Navigation />
     <div class="text-white flex justify-between mt-10">
       <button @click="getCurrentLocation">
         <i class="fa-solid fa-location-dot"></i>
@@ -181,6 +182,7 @@
 
 <script setup>
 import axios from "axios";
+import Navigation from "./Navigation.vue";
 import { ref, onMounted, watchEffect } from "vue";
 import axiosInstance from "../authorization/api";
 import { useToast } from "vue-toast-notification";
@@ -350,7 +352,7 @@ const addToMaps = async () => {
     toast.success(response.data.message);
   } catch (error) {
     console.log("failed to add");
-    toast.error("existing weather data")
+    toast.error("existing weather data");
   }
 };
 const formatDate = (dateString) => {
