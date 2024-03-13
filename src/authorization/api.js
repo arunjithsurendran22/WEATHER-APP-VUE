@@ -2,9 +2,10 @@ import axios from "axios";
 
 // Create an Axios instance with default configuration
 const axiosInstance = axios.create({
-  baseURL: "https://vue-js-server.vercel.app/api/v5/user",
+  baseURL: "http://localhost:3000/api/v5/user",
 });
 
+// https://vue-js-server.vercel.app/api/v5/user
 // Add request interceptor
 axiosInstance.interceptors.request.use(
   (config) => {

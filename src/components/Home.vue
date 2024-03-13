@@ -304,7 +304,7 @@ const getWeatherData = async () => {
   isAddedToMaps.value = false;
   try {
     const responseData = await axios.get(
-      `http://api.weatherapi.com/v1/current.json?key=${APIkey}&q=${newCity.value}&aqi=no`
+      `https://api.weatherapi.com/v1/current.json?key=${APIkey}&q=${newCity.value}&aqi=no`
     );
     weatherData.value = responseData.data;
     console.log(responseData.data);
@@ -320,7 +320,7 @@ const getTenDaysData = async (placeName) => {
   loading.value = true;
   try {
     const responseTenData = await axios.get(
-      `http://api.weatherapi.com/v1/forecast.json?key=${APIkey}&q=${newCity.value}&days=${day}&aqi=no&alerts=no`
+      `https://api.weatherapi.com/v1/forecast.json?key=${APIkey}&q=${newCity.value}&days=${day}&aqi=no&alerts=no`
     );
     weatherDataTen.value = responseTenData.data;
     loading.value = false;
