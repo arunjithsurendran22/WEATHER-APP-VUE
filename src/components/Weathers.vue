@@ -87,7 +87,7 @@ const fetchWeatherData = async (place) => {
   try {
     if (place && place.name) {
       const response = await axios.get(
-        `http://api.weatherapi.com/v1/current.json?key=${APIkey}&q=${place.name}&aqi=no`
+        `https://api.weatherapi.com/v1/current.json?key=${APIkey}&q=${place.name}&aqi=no`
       );
       console.log("Weather data for", place.name, ":", response.data);
       weatherData.value[place.name] = response.data;
