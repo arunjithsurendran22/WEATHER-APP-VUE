@@ -288,6 +288,7 @@ const getCurrentCity = async () => {
 
 const previewCity = (searchResult) => {
   const [city, state] = searchResult.place_name.split(",");
+  console.log(city);
   const cityNameData = city.split(","); // Extracted city name
   const newCityName = cityNameData[0]; // Update searchQuery value
   console.log(newCityName, "searched city name");
@@ -307,7 +308,6 @@ const getWeatherData = async () => {
       `https://api.weatherapi.com/v1/current.json?key=${APIkey}&q=${newCity.value}&aqi=no`
     );
     weatherData.value = responseData.data;
-    console.log(responseData.data);
     loading.value = false;
   } catch (error) {
     console.error("Weather API Error:", error);
@@ -326,7 +326,7 @@ const getTenDaysData = async (placeName) => {
     loading.value = false;
   } catch (error) {
     console.error("Weather API Error:", error);
-    loading.value = false; // Turn off loading state in case of error
+    loading.value = false; // 
     error.value = true; // Set error state to true
   }
 };
@@ -336,7 +336,6 @@ const addNewCity = async () => {
     await axiosInstance.post("/weather/current-weather/add", {
       currentCity: newCity.value,
     });
-    console.log("new city name posted");
   } catch (error) {
     console.log("failed to add city");
   }

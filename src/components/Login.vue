@@ -1,6 +1,6 @@
 <template>
-  <div class="flex justify-center items-center h-screen bg-gradient-to-b from-purple-900 to-blue-900">
-    <div class="bg-gray-300 rounded-lg shadow-xl px-8 py-16 max-w-md w-full transform transition-transform duration-300 hover:scale-105">
+  <div class="flex justify-center items-center h-screen bg-gradient-to-b from-purple-900 to-blue-900 ">
+    <div class="bg-gray-300 rounded-lg shadow-xl px-8 py-16 max-w-md w-full transform transition-transform duration-300 hover:scale-105 ">
       <h1 class="text-center text-4xl font-bold mb-8 text-gray-900 font-serif">Login</h1>
       <form @submit.prevent="loginUser" class="space-y-8">
         <div>

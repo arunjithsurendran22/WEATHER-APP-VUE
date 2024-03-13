@@ -1,6 +1,6 @@
 <template>
   <div
-    class="bg-gradient-to-b from-purple-900 to-blue-900 min-h-screen flex items-center justify-center"
+    class="bg-gradient-to-b from-purple-900 to-blue-900 min-h-screen flex items-center justify-center "
   >
     <div
       class="bg-gray-300 rounded-lg shadow-xl p-8 max-w-md w-full transform transition-transform duration-300 hover:scale-105"
@@ -67,7 +67,7 @@
         to="/"
         class="block text-center mt-4 text-gray-600 hover:underline italic"
       >
-        <span>Already have an account?</span> Login
+        <span class="text-sm">Already have an account?</span> Login
       </RouterLink>
     </div>
   </div>
