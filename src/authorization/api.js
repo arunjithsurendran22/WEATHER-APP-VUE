@@ -2,7 +2,7 @@ import axios from "axios";
 
 // Create an Axios instance with default configuration
 const axiosInstance = axios.create({
-  baseURL: "http://localhost:3000/api/v5/user",
+  baseURL: "https://vue-js-server.vercel.app/api/v5/user",
 });
 
 // https://vue-js-server.vercel.app/api/v5/user
